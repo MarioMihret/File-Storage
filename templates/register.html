@@ -99,7 +99,7 @@
                                             </span>
                                             <input type="password" class="form-control border-start-0 bg-light" 
                                                 id="password" name="password" placeholder="••••••••" 
-                                                required minlength="6">
+                                                required minlength="6" autocomplete="new-password">
                                             <button class="btn btn-light border border-start-0" type="button" id="togglePassword" aria-label="Toggle password visibility">
                                                 <i class="bi bi-eye"></i>
                                             </button>
@@ -257,6 +257,82 @@
                 this.querySelector('i').classList.toggle('bi-eye');
                 this.querySelector('i').classList.toggle('bi-eye-slash');
             });
+        }
+    });
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const emailInput = document.getElementById('email');
+        const emailFeedback = document.getElementById('email-feedback');
+        const passwordInput = document.getElementById('password');
+        const togglePasswordBtn = document.getElementById('togglePassword');
+
+        // Email Validation
+        if (emailInput && emailFeedback) {
+            emailInput.addEventListener('input', function() {
+                const emailValue = emailInput.value.trim();
+                // Basic regex for email format validation
+                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                
+                if (emailValue === '' || emailRegex.test(emailValue)) {
+                    emailInput.classList.remove('is-invalid');
+                    emailFeedback.textContent = 'Please enter a valid email address.'; // Reset feedback message
+                } else {
+                    emailInput.classList.add('is-invalid');
+                    emailFeedback.textContent = 'Invalid email format.';
+                }
+            });
+        }
+        
+        // Password Toggle
+        if (togglePasswordBtn && passwordInput) {
+            togglePasswordBtn.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                // Toggle eye icon
+                this.querySelector('i').classList.toggle('bi-eye');
+                this.querySelector('i').classList.toggle('bi-eye-slash');
+            });
+        }
+        
+        // Optional: Real-time check if terms are agreed (can be useful if form submission logic relies on it)
+        const termsCheckbox = document.getElementById('terms');
+        const termsFeedback = document.getElementById('terms-feedback');
+        const registerForm = document.querySelector('form');
+        
+        if (termsCheckbox && termsFeedback && registerForm) {
+             // Validate on initial load if form was re-rendered with errors
+             if (!termsCheckbox.checked && registerForm.classList.contains('was-validated')) {
+                 termsCheckbox.classList.add('is-invalid');
+             }
+             
+             termsCheckbox.addEventListener('change', function() {
+                 if (this.checked) {
+                     termsCheckbox.classList.remove('is-invalid');
+                 } else {
+                     // Only show invalid if the form has been attempted to be submitted
+                     if (registerForm.classList.contains('was-validated')) {
+                         termsCheckbox.classList.add('is-invalid');
+                     }
+                 }
+             });
+             
+             // Add was-validated on submit attempt to trigger feedback display
+             registerForm.addEventListener('submit', function (event) {
+                if (!registerForm.checkValidity()) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                }
+                registerForm.classList.add('was-validated');
+                
+                // Explicitly check terms checkbox on submit attempt
+                if (!termsCheckbox.checked) {
+                    termsCheckbox.classList.add('is-invalid');
+                }
+              }, false);
         }
     });
 </script>

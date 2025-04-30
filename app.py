@@ -13,6 +13,7 @@ import hashlib
 import secrets
 import mimetypes
 import shutil
+import re # Added for email validation
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -96,6 +97,12 @@ def login():
         email = request.form['email']
         password = request.form['password']
         
+        # Basic email format validation
+        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+        if not re.match(email_regex, email):
+            flash('Invalid email format', 'danger')
+            return render_template('login.html')
+            
         try:
             user_data = users_collection.find_one({'email': email})
             if user_data and check_password_hash(user_data['password'], password):
@@ -134,6 +141,12 @@ def register():
         # Basic validation
         if not username or not email or not password:
             flash('All fields are required', 'danger')
+            return render_template('register.html')
+            
+        # Basic email format validation
+        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+        if not re.match(email_regex, email):
+            flash('Invalid email format', 'danger')
             return render_template('register.html')
             
         if len(password) < 6:

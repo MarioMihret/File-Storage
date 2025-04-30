@@ -301,8 +301,29 @@
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li><a class="dropdown-item" href="{{ url_for('download_file', file_id=file._id) }}"><i class="bi bi-download me-2"></i>Download</a></li>
-                                        <li><button class="dropdown-item move-file-btn" data-file-id="{{ file._id }}" data-filename="{{ file.filename }}"><i class="bi bi-folder-symlink me-2"></i>Move to Folder</button></li>
                                         <li><button class="dropdown-item text-danger delete-btn" data-file-id="{{ file._id }}" data-filename="{{ file.filename }}"><i class="bi bi-trash me-2"></i>Delete</button></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item share-link" 
+                                               href="https://www.facebook.com/sharer/sharer.php?u={{ request.url_root }}download/{{ file._id }}" 
+                                               target="_blank">
+                                                <i class="bi bi-facebook me-2" style="color: #1877F2;"></i>Share on Facebook
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item share-link" 
+                                               href="https://twitter.com/intent/tweet?url={{ request.url_root }}download/{{ file._id }}&text=Check out this file: {{ file.filename }}" 
+                                               target="_blank">
+                                                <i class="bi bi-twitter me-2" style="color: #1DA1F2;"></i>Share on Twitter
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item share-link" 
+                                               href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.url_root }}download/{{ file._id }}" 
+                                               target="_blank">
+                                                <i class="bi bi-linkedin me-2" style="color: #0A66C2;"></i>Share on LinkedIn
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
